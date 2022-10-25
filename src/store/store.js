@@ -2,24 +2,11 @@ import { compose, createStore, applyMiddleware } from "redux";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-//import logger from "redux-logger";
+//import { loggerMiddleware } from "./middleware/logger";
+import logger from "redux-logger";
 
 //root-reducer- a combination of all the reducers
 import { rootReducer } from "./root-reducer";
-
-const loggerMiddleware = (store) => (next) => (action) => {
-  if (!action.type) {
-    return next(action);
-  }
-
-  console.log("type: ", action.type);
-  console.log("payload: ", action.payload);
-  console.log("currentState: ", store.getState());
-
-  next(action);
-
-  console.log("next state: ", store.getState());
-};
 
 const persistConfig = {
   key: "root", //persist all
@@ -29,13 +16,28 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const middleWares = [loggerMiddleware];
+//We don't want to see the logs in production mode (process.env.NODE_ENV)
+// const middleWares = [
+//   process.env.NODE_ENV !== "production" && loggerMiddleware,
+// ].filter(Boolean);
 
-//can replace the above lines
-//const middleWares = [logger];
+//Replace the "home-made" logger on the above line, using redux-logger
+const middleWares = [process.env.NODE_ENV !== "production" && logger].filter(
+  Boolean
+);
 
-//Enhancer - to catch actions before they hit the reducers and it enables log-out the state
-const composedEnhancers = compose(applyMiddleware(...middleWares));
+//To use either Redux-Dev-Tools on Chrom or the regular console
+const composeEnhancer =
+  (process.env.NODE_ENV !== "production" &&
+    window &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
+
+const composedEnhancers = composeEnhancer(applyMiddleware(...middleWares));
+
+// //Enhancer - to catch actions before they hit the reducers and it enables log-out the state
+// //If the composeEnhancer was not written this should have been used
+//const composedEnhancers = compose(applyMiddleware(...middleWares));
 
 //1. rootReducer - only must 2. optional: additional default state 3. optional: middleWares: library helpers which occur before the reducer (such as dispatch)
 export const store = createStore(

@@ -1,11 +1,37 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import CategoriesPreview from "../categories-preview/categories-preview.component";
 import Category from "../category/category.component";
+//Used only once in the useEffect for uploading the array of the SHOP_DATA to the firestore
+import SHOP_DATA from "../../shop-data";
+import { setCategories } from "../../store/categories/category.action";
+
+import {
+  addCollectionAndDocuments,
+  getCategoriesAndDocuments,
+} from "../../utils/firebase/firebase.utils";
 
 //import {} from  "./shop.styles";
 
 const Shop = () => {
+  const dispatch = useDispatch();
+  //This useEffect is done only once for uploading the array of the SHOP_DATA to the firestore
+  // useEffect(() => {
+  // // The corresponding redux action should be written; performed earlier with Context
+  //   dispatch(addCollectionAndDocuments("categories", SHOP_DATA));
+  // }, []);
+
+  useEffect(() => {
+    const getCategoriesMap = async () => {
+      const categoriesArray = await getCategoriesAndDocuments();
+      //console.log(categoriesArray);
+      dispatch(setCategories(categoriesArray));
+    };
+    getCategoriesMap();
+  }, []);
+
   return (
     <Routes>
       <Route index element={<CategoriesPreview />} />
@@ -15,31 +41,3 @@ const Shop = () => {
 };
 
 export default Shop;
-
-//map threw array (above is threw object with HashTable with key and value)
-// <div className="products-containers">
-//   {products.map((product) => (
-//     <ProductCard key={product.id} product={product} />
-//   ))}
-// </div>;
-
-//Showing everything
-// import { useContext } from "react";
-// import { CategoriesContext } from "../../contexts/categories.context";
-// import CategoryPreview from "../../components/category-preview/category-preview.component";
-//import ProductCard from "../../components/product-card/product-card.component";
-//import { Fragment, useContext } from "react";
-
-// <Fragment>
-// {Object.keys(categoriesMap).map((title) => (
-//   <Fragment key={title}>
-//     <h2>{title}</h2>
-//     <div className="products-containers">
-//       {categoriesMap[title].map((product) => (
-//         <ProductCard key={product.id} product={product} />
-//       ))}
-//     </div>
-//     ;
-//   </Fragment>
-// ))}
-// </Fragment>

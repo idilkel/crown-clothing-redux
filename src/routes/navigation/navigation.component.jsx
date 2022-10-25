@@ -1,13 +1,18 @@
 import { Fragment, useContext } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 
 import CartIcon from "../../components/cart-icon/cart-icon.component";
 import CartDropdown from "../../components/cart-dropdown/cart-dropdown.component";
 
 import { ReactComponent as CrwnLogo } from "../../assets/crown.svg";
 
-import { UserContext } from "../../contexts/user.context";
-import { CartContext } from "../../contexts/cart.context";
+import { selectCurrentUser } from "../../store/user/user.selector";
+import {
+  selectIsCartOpen,
+  selectCartItems,
+} from "../../store/cart/cart.selector";
+import { clearCart } from "../../store/cart/cart.action";
 
 import { signOutUser } from "../../utils/firebase/firebase.utils";
 
@@ -19,23 +24,16 @@ import {
 } from "./navigation.styles";
 
 const Navigation = () => {
-  //only one can be used current user/setCurrentUser according to what is used
-  //We have the onAuthStateChangedListener instead of the setCurrentUser
-  const { currentUser } = useContext(UserContext);
-  //console.log(currentUser);
+  const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const isCartOpen = useSelector(selectIsCartOpen);
+  const cartItems = useSelector(selectCartItems);
 
-  //We have the onAuthStateChangedListener instead: onClick only signOutUser
-  // const signOutHandler = async () => {
-  //   await signOutUser();
-  //   setCurrentUser(null);
-  // };
-
-  const { isCartOpen, clearCart } = useContext(CartContext);
   const navigate = useNavigate();
 
   const signOutHandler = async () => {
     await signOutUser().then(() => {
-      clearCart();
+      dispatch(clearCart(cartItems));
       navigate("/auth");
     });
   };

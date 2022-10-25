@@ -1,9 +1,9 @@
 import { compose, createStore, applyMiddleware } from "redux";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-
 //import { loggerMiddleware } from "./middleware/logger";
 import logger from "redux-logger";
+import thunk from "redux-thunk";
 
 //root-reducer- a combination of all the reducers
 import { rootReducer } from "./root-reducer";
@@ -11,7 +11,8 @@ import { rootReducer } from "./root-reducer";
 const persistConfig = {
   key: "root", //persist all
   storage,
-  blacklist: ["user"], //we don't want the user to persist because it's coming from AuthListener and they might conflict
+  //blacklist: ["user"], //we don't want the user to persist because it's coming from AuthListener and they might conflict
+  whitelist: ["cart"],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -22,9 +23,10 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 // ].filter(Boolean);
 
 //Replace the "home-made" logger on the above line, using redux-logger
-const middleWares = [process.env.NODE_ENV !== "production" && logger].filter(
-  Boolean
-);
+const middleWares = [
+  process.env.NODE_ENV !== "production" && logger,
+  thunk,
+].filter(Boolean);
 
 //To use either Redux-Dev-Tools on Chrom or the regular console
 const composeEnhancer =

@@ -6,7 +6,7 @@ import CategoriesPreview from "../categories-preview/categories-preview.componen
 import Category from "../category/category.component";
 //Used only once in the useEffect for uploading the array of the SHOP_DATA to the firestore
 import SHOP_DATA from "../../shop-data";
-import { setCategories } from "../../store/categories/category.action";
+import { fetchCategoriesAsync } from "../../store/categories/category.action";
 
 import {
   addCollectionAndDocuments,
@@ -23,13 +23,9 @@ const Shop = () => {
   //   dispatch(addCollectionAndDocuments("categories", SHOP_DATA));
   // }, []);
 
+  //redux-thunk used here
   useEffect(() => {
-    const getCategoriesMap = async () => {
-      const categoriesArray = await getCategoriesAndDocuments();
-      //console.log(categoriesArray);
-      dispatch(setCategories(categoriesArray));
-    };
-    getCategoriesMap();
+    dispatch(fetchCategoriesAsync());
   }, []);
 
   return (

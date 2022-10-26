@@ -2,6 +2,8 @@
 //useContext is not needed: We have the onAuthStateChangedListener instead
 import { useState } from "react";
 
+import { useDispatch } from "react-redux";
+
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 
@@ -12,6 +14,7 @@ import {
 
 import { SignUpContainer, AlertMessage } from "./sign-up-form.styles";
 import { useNavigate } from "react-router-dom";
+import { signUpStart } from "../../store/user/user.action";
 
 const defaultFormFields = {
   displayName: "",
@@ -21,6 +24,7 @@ const defaultFormFields = {
 };
 
 const SignUpForm = () => {
+  const dispatch = useDispatch();
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { displayName, email, password, confirmPassword } = formFields;
   const [alertMsg, setAlertMsg] = useState("");
@@ -43,17 +47,7 @@ const SignUpForm = () => {
       return;
     }
     try {
-      //   const response = await createAuthUserWithEmailAndPassword(
-      const { user } = await createAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
-      //   console.log(response);
-
-      //We have the onAuthStateChangedListener instead
-      //setCurrentUser(user);
-
-      await createUserDocumentFromAuth(user, { displayName });
+      dispatch(signUpStart(email, password, displayName));
       resetFormFields();
       navigate("/shop");
       setAlertMsg("");

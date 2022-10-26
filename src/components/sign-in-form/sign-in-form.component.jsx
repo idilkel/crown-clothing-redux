@@ -1,15 +1,10 @@
 //import { signInWithEmailAndPassword } from "firebase/auth";
 //useContext is not needed: We have the onAuthStateChangedListener instead
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 import FormInput from "../form-input/form-input.component";
 import Button, { BUTTON_TYPE_CLASSES } from "../button/button.component";
-
-import {
-  signInWithGooglePopup,
-  createUserDocumentFromAuth,
-  signInAuthUserWithEmailAndPassword,
-} from "../../utils/firebase/firebase.utils";
 
 import {
   ButtonsContainer,
@@ -18,12 +13,18 @@ import {
 } from "./sign-in-form.styles";
 import { useNavigate } from "react-router-dom";
 
+import {
+  googleSignInStart,
+  emailSignInStart,
+} from "../../store/user/user.action";
+
 const defaultFormFields = {
   email: "",
   password: "",
 };
 
 const SignInForm = () => {
+  const dispatch = useDispatch();
   const [formFields, setFormFields] = useState(defaultFormFields);
   const { email, password } = formFields;
   const [alertMsg, setAlertMsg] = useState("");
@@ -39,7 +40,7 @@ const SignInForm = () => {
   };
 
   const signInWithGoogle = async () => {
-    await signInWithGooglePopup();
+    dispatch(googleSignInStart());
     setAlertMsg("");
 
     //We have the onAuthStateChangedListener instead
@@ -53,18 +54,7 @@ const SignInForm = () => {
     event.preventDefault();
 
     try {
-      // const response = await signInAuthUserWithEmailAndPassword(
-      //   email,
-      //   password
-      // );
-      // console.log(response);
-      const { user } = await signInAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
-      //We have the onAuthStateChangedListener instead
-      //setCurrentUser(user);
-
+      dispatch(emailSignInStart(email, password));
       resetFormFields();
       navigate("/shop");
       setAlertMsg("");

@@ -3,12 +3,7 @@ import { useDispatch } from "react-redux";
 
 import { Routes, Route } from "react-router-dom";
 
-import { setCurrentUser } from "./store/user/user.action";
-
-import {
-  onAuthStateChangedListener,
-  createUserDocumentFromAuth,
-} from "./utils/firebase/firebase.utils";
+import { checkUserSession } from "./store/user/user.action";
 
 import Home from "./routes/home/home.components";
 import Navigation from "./routes/navigation/navigation.component";
@@ -19,19 +14,9 @@ import Checkout from "./routes/checkout/checkout.component";
 const App = () => {
   const dispatch = useDispatch();
 
+  //react-saga
   useEffect(() => {
-    const unsubscribe = onAuthStateChangedListener((user) => {
-      if (user) {
-        //create the userDocument if a user comes threw
-        createUserDocumentFromAuth(user);
-      }
-      //console.log(user); //null when logged out or full user when logged in
-      //not dispatching; just creating an object
-      dispatch(setCurrentUser(user));
-    });
-
-    //unmount
-    return unsubscribe;
+    dispatch(checkUserSession());
   }, []);
 
   return (

@@ -1,5 +1,5 @@
-import { Fragment, useContext } from "react";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Fragment } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 
 import CartIcon from "../../components/cart-icon/cart-icon.component";
@@ -14,7 +14,7 @@ import {
 } from "../../store/cart/cart.selector";
 import { clearCart } from "../../store/cart/cart.action";
 
-import { signOutUser } from "../../utils/firebase/firebase.utils";
+import { signOutStart } from "../../store/user/user.action";
 
 import {
   NavigationContainer,
@@ -31,11 +31,10 @@ const Navigation = () => {
 
   const navigate = useNavigate();
 
-  const signOutHandler = async () => {
-    await signOutUser().then(() => {
-      dispatch(clearCart(cartItems));
-      navigate("/auth");
-    });
+  const signOutHandler = () => {
+    dispatch(signOutStart());
+    dispatch(clearCart(cartItems));
+    navigate("/auth");
   };
 
   return (

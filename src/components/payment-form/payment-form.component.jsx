@@ -7,12 +7,16 @@ import { selectCurrentUser } from "../../store/user/user.selector";
 import { selectCartItems } from "../../store/cart/cart.selector";
 
 import { BUTTON_TYPE_CLASSES } from "../button/button.component";
+import FormInput from "../form-input/form-input.component";
+
 import { clearCart } from "../../store/cart/cart.action";
 
 import {
   PaymentFormContainer,
   FormContainer,
   PaymentButton,
+  NameInput,
+  CardElementContainer,
 } from "./payment-form.styles";
 
 const PaymentForm = () => {
@@ -23,6 +27,7 @@ const PaymentForm = () => {
   const currentUser = useSelector(selectCurrentUser);
   const cartItems = useSelector(selectCartItems);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [cardHolderName, setCardHolderName] = useState("");
 
   //console.log(currentUser);
 
@@ -54,7 +59,7 @@ const PaymentForm = () => {
       payment_method: {
         card: elements.getElement(CardElement),
         billing_details: {
-          name: currentUser !== null ? currentUser.displayName : "Guest",
+          name: cardHolderName !== "" ? cardHolderName : "Guest",
         },
       },
     });
@@ -72,11 +77,27 @@ const PaymentForm = () => {
       }
     }
   };
+
+  const handleChange = (event) => {
+    const nameString = event.target.value;
+    setCardHolderName(nameString);
+  };
+
   return (
     <PaymentFormContainer>
       <FormContainer onSubmit={paymentHandler}>
         <h2>Credit Card Payment</h2>
-        <CardElement />
+        <NameInput
+          type="text"
+          onChange={handleChange}
+          name="cardHolderName"
+          value={cardHolderName}
+          placeholder="Card Holder Full Name"
+        />
+        <CardElementContainer>
+          <CardElement />
+        </CardElementContainer>
+
         <PaymentButton
           isLoading={isProcessingPayment}
           buttonType={BUTTON_TYPE_CLASSES.inverted}

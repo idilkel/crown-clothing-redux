@@ -120,7 +120,8 @@ export const createUserDocumentFromAuth = async (
   }
 
   // if user data exists: just return the userDocRef
-  return userDocRef;
+  //return userDocRef;
+  return userSnapshot;
 };
 
 export const createAuthUserWithEmailAndPassword = async (email, password) => {

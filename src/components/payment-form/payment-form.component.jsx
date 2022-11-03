@@ -92,7 +92,7 @@ const PaymentForm = () => {
           onChange={handleChange}
           name="cardHolderName"
           value={cardHolderName}
-          placeholder="Card Holder Full Name"
+          placeholder="Card Holder Name"
         />
         <CardElementContainer>
           <CardElement />

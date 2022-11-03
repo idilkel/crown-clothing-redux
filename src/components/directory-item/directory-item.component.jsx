@@ -3,6 +3,8 @@ import {
   BackgroundImage,
   Body,
   DirectoryItemContainer,
+  ContentTitle,
+  ContentSubtitle,
 } from "./directory-item.styles";
 
 const DirectoryItem = ({ category }) => {
@@ -15,8 +17,8 @@ const DirectoryItem = ({ category }) => {
     <DirectoryItemContainer onClick={onNavigateHandler}>
       <BackgroundImage imageUrl={imageUrl} />
       <Body>
-        <h2>{title}</h2>
-        <p>Shop Now</p>
+        <ContentTitle>{title.toUpperCase()}</ContentTitle>
+        <ContentSubtitle>Shop Now</ContentSubtitle>
       </Body>
     </DirectoryItemContainer>
   );

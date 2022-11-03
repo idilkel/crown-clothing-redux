@@ -20,6 +20,10 @@ export const Body = styled.div`
   opacity: 0.7;
   position: absolute;
 
+  @media screen and (max-width: 800px) {
+    height: 60px;
+  }
+
   /* h2 {
     font-weight: bold;
     margin: 0 6px 0;
